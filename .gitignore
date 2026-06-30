@@ -12,5 +12,5 @@ frontend/.angular/
 .vscode/
 *.iml
 
-# Claude Code
-.claude/
+# Claude Code — ignore session config, track skills
+.claude/settings.local.json
