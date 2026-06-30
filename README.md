@@ -28,6 +28,7 @@ Application de démonstration full-stack en cours de développement, entièremen
 - **MapStruct** : mapping entre entités JPA, modèles domaine et DTOs OpenAPI
 - **Spring Security** : Basic Auth (utilisateur `admin` en profil dev)
 - **Spring Boot Actuator** : endpoint `/actuator/health`
+- **RFC 7807 Problem Details** (`ProblemDetail`, `ResponseEntityExceptionHandler`) : réponses d'erreur standardisées avec `type`, `title`, `status`, `detail`, `instance` — erreurs de validation enrichies avec un tableau `errors[]` par champ
 - **Tests d'intégration** :
   - `@DataJpaTest` pour la couche JPA
   - `@SpringBootTest(webEnvironment=NONE)` pour la couche service
