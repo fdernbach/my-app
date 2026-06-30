@@ -66,21 +66,27 @@ class UserControllerIT {
     }
 
     @Test
-    void createUser_returns400_whenLastNameMissing() throws Exception {
+    void createUser_returns400_withProblemDetail_whenLastNameMissing() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                { "firstName": "Jean" }
+                                { "firstName": "Jean", "email": "jean@example.com" }
                                 """))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("urn:problem:validation-error"))
+                .andExpect(jsonPath("$.title").value("Validation Failed"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errors[0].field").value("lastName"));
     }
 
     @Test
-    void createUser_returns400_whenBodyIsEmpty() throws Exception {
+    void createUser_returns400_withProblemDetail_whenBodyIsEmpty() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("urn:problem:validation-error"))
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     // ── GET /users ───────────────────────────────────────────────────────────
@@ -142,9 +148,14 @@ class UserControllerIT {
     }
 
     @Test
-    void getUserById_returns404_whenNotFound() throws Exception {
+    void getUserById_returns404_withProblemDetail_whenNotFound() throws Exception {
         mockMvc.perform(get("/users/{id}", UUID.randomUUID()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("urn:problem:user-not-found"))
+                .andExpect(jsonPath("$.title").value("User Not Found"))
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.detail").isNotEmpty())
+                .andExpect(jsonPath("$.instance").isNotEmpty());
     }
 
     // ── PUT /users/{id} ──────────────────────────────────────────────────────
