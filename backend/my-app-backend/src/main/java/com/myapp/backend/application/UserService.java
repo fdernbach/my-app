@@ -1,5 +1,6 @@
 package com.myapp.backend.application;
 
+import com.myapp.backend.domain.exception.UserNameAlreadyExistsException;
 import com.myapp.backend.domain.exception.UserNotFoundException;
 import com.myapp.backend.domain.model.AuditData;
 import com.myapp.backend.domain.model.Page;
@@ -29,8 +30,12 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public User createUser(User user) {
+        if (userRepository.existsByUserName(user.getUserName())) {
+            throw new UserNameAlreadyExistsException(user.getUserName());
+        }
         return userRepository.save(new User(
                 UUID.randomUUID(),
+                user.getUserName(),
                 user.getLastName(),
                 user.getFirstName(),
                 user.getEmail(),
@@ -55,6 +60,7 @@ public class UserService implements UserUseCase {
         auditData.setVersion(existing.getAuditData().getVersion());
         return userRepository.save(new User(
                 id,
+                existing.getUserName(), // userName is immutable
                 user.getLastName(),
                 user.getFirstName(),
                 user.getEmail(),

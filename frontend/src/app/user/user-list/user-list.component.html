@@ -19,6 +19,7 @@
       <table>
         <thead>
           <tr>
+            <th>Identifiant</th>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
@@ -28,7 +29,8 @@
         <tbody>
           @for (user of state.page.content; track user.id) {
             <tr>
-              <td><a [routerLink]="['/users', user.id]">{{ user.lastName }}</a></td>
+              <td><a [routerLink]="['/users', user.id]">{{ user.userName }}</a></td>
+              <td>{{ user.lastName }}</td>
               <td>{{ user.firstName }}</td>
               <td>{{ user.email }}</td>
               <td class="col-actions">

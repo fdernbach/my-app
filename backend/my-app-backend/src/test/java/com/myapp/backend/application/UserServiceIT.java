@@ -180,6 +180,7 @@ class UserServiceIT {
 
     private User buildRequest(String lastName, String firstName) {
         User user = new User();
+        user.setUserName(String.valueOf(firstName.toLowerCase().charAt(0)) + lastName.toLowerCase());
         user.setLastName(lastName);
         user.setFirstName(firstName);
         user.setEmail(firstName.toLowerCase() + "." + lastName.toLowerCase() + "@example.com");

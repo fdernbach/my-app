@@ -14,6 +14,9 @@ public class UserEntity {
     @Id
     private UUID id;
 
+    @Column(name = "user_name", nullable = false, unique = true)
+    private String userName;
+
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
@@ -39,6 +42,9 @@ public class UserEntity {
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }

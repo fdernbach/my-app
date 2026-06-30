@@ -6,6 +6,7 @@ import java.util.UUID;
 public class User {
 
     private UUID id;
+    private String userName;
     private String lastName;
     private String firstName;
     private String email;
@@ -15,9 +16,10 @@ public class User {
 
     public User() {}
 
-    public User(UUID id, String lastName, String firstName, String email, LocalDate birthDate,
-                Address address, AuditData auditData) {
+    public User(UUID id, String userName, String lastName, String firstName, String email,
+                LocalDate birthDate, Address address, AuditData auditData) {
         this.id = id;
+        this.userName = userName;
         this.lastName = lastName;
         this.firstName = firstName;
         this.email = email;
@@ -28,6 +30,9 @@ public class User {
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }

@@ -46,6 +46,11 @@ public class UserPersistenceAdapter implements UserRepository {
     }
 
     @Override
+    public boolean existsByUserName(String userName) {
+        return jpaRepository.existsByUserName(userName);
+    }
+
+    @Override
     public User save(User user) {
         UserEntity saved = jpaRepository.saveAndFlush(mapper.toEntity(user));
         // refresh reloads DB state into the managed entity: necessary on update because

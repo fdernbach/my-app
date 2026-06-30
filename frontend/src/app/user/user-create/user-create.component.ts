@@ -19,6 +19,7 @@ export class UserCreateComponent {
   readonly error = signal<string | null>(null);
 
   readonly form = new FormGroup({
+    userName:  new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     lastName:  new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     email:     new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -42,10 +43,11 @@ export class UserCreateComponent {
     this.submitting.set(true);
     this.error.set(null);
 
-    const { lastName, firstName, email, birthDate, address } = this.form.getRawValue();
+    const { userName, lastName, firstName, email, birthDate, address } = this.form.getRawValue();
     const hasAddress = !!(address.streetName || address.city || address.postalCode);
 
     const request: UserRequest = {
+      userName,
       lastName,
       firstName,
       email,
@@ -64,8 +66,12 @@ export class UserCreateComponent {
 
     this.userService.createUser(request).subscribe({
       next: () => this.router.navigate(['/users']),
-      error: () => {
-        this.error.set('Erreur lors de la création de l\'utilisateur.');
+      error: (err) => {
+        if (err.status === 409) {
+          this.error.set(err.error?.detail ?? 'Ce nom d\'utilisateur est déjà utilisé.');
+        } else {
+          this.error.set('Erreur lors de la création de l\'utilisateur.');
+        }
         this.submitting.set(false);
       }
     });

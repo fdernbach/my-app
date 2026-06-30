@@ -11,6 +11,14 @@
       <legend>Identité</legend>
 
       <div class="field">
+        <label for="userName">Identifiant *</label>
+        <input id="userName" formControlName="userName" autocomplete="username" />
+        @if (form.controls.userName.invalid && form.controls.userName.touched) {
+          <span class="field-error">L'identifiant est obligatoire.</span>
+        }
+      </div>
+
+      <div class="field">
         <label for="lastName">Nom *</label>
         <input id="lastName" formControlName="lastName" />
         @if (form.controls.lastName.invalid && form.controls.lastName.touched) {

@@ -1,5 +1,6 @@
 package com.myapp.backend.infrastructure.rest.exception;
 
+import com.myapp.backend.domain.exception.UserNameAlreadyExistsException;
 import com.myapp.backend.domain.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -26,6 +27,17 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ProblemDetailExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ProblemDetailExceptionHandler.class);
+
+    @ExceptionHandler(UserNameAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleUserNameAlreadyExists(UserNameAlreadyExistsException ex,
+                                                                     HttpServletRequest request) {
+        log.warn("Username conflict: {}", ex.getMessage());
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(CONFLICT, ex.getMessage());
+        pd.setTitle("Username Already Taken");
+        pd.setType(URI.create("urn:problem:duplicate-username"));
+        pd.setInstance(URI.create(request.getRequestURI()));
+        return ResponseEntity.status(CONFLICT).body(pd);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleUserNotFound(UserNotFoundException ex,

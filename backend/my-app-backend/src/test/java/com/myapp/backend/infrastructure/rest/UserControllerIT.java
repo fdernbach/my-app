@@ -32,6 +32,7 @@ class UserControllerIT {
 
     private static final String USER_JSON = """
             {
+              "userName": "jdupont",
               "lastName": "Dupont",
               "firstName": "Jean",
               "email": "jean.dupont@example.com",
@@ -70,7 +71,7 @@ class UserControllerIT {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                { "firstName": "Jean", "email": "jean@example.com" }
+                                { "userName": "jdupont", "firstName": "Jean", "email": "jean@example.com" }
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("urn:problem:validation-error"))
@@ -119,7 +120,7 @@ class UserControllerIT {
     void listUsers_returnsPaginatedResults() throws Exception {
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(USER_JSON));
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
-                { "lastName": "Martin", "firstName": "Sophie", "email": "sophie.martin@example.com" }
+                { "userName": "smartin", "lastName": "Martin", "firstName": "Sophie", "email": "sophie.martin@example.com" }
                 """));
 
         mockMvc.perform(get("/users").param("page", "0").param("size", "1"))
@@ -170,7 +171,7 @@ class UserControllerIT {
         mockMvc.perform(put("/users/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                { "lastName": "Durand", "firstName": "Pierre", "email": "pierre.durand@example.com" }
+                                { "userName": "jdupont", "lastName": "Durand", "firstName": "Pierre", "email": "pierre.durand@example.com" }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastName").value("Durand"))

@@ -152,6 +152,7 @@ class UserJpaRepositoryTest {
     private UserEntity buildUser(UUID id, String lastName, String firstName) {
         UserEntity entity = new UserEntity();
         entity.setId(id);
+        entity.setUserName(String.valueOf(firstName.toLowerCase().charAt(0)) + lastName.toLowerCase());
         entity.setLastName(lastName);
         entity.setFirstName(firstName);
         entity.setEmail(firstName.toLowerCase() + "." + lastName.toLowerCase() + "@example.com");

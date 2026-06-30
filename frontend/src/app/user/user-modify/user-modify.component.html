@@ -17,6 +17,12 @@
         <legend>Identité</legend>
 
         <div class="field">
+          <label for="userName">Identifiant</label>
+          <input id="userName" formControlName="userName" class="field-readonly" />
+          <span class="field-hint">L'identifiant ne peut pas être modifié.</span>
+        </div>
+
+        <div class="field">
           <label for="lastName">Nom *</label>
           <input id="lastName" formControlName="lastName" />
           @if (form.controls.lastName.invalid && form.controls.lastName.touched) {

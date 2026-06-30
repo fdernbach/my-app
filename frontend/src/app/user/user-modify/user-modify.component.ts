@@ -24,6 +24,7 @@ export class UserModifyComponent implements OnInit {
   readonly submitError = signal<string | null>(null);
 
   readonly form = new FormGroup({
+    userName:  new FormControl({ value: '', disabled: true }, { nonNullable: true }),
     lastName:  new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     email:     new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -43,6 +44,7 @@ export class UserModifyComponent implements OnInit {
     this.userService.getUser(this.userId()).subscribe({
       next: user => {
         this.form.patchValue({
+          userName:  user.userName,
           lastName:  user.lastName,
           firstName: user.firstName,
           email:     user.email,
@@ -74,10 +76,11 @@ export class UserModifyComponent implements OnInit {
     this.submitting.set(true);
     this.submitError.set(null);
 
-    const { lastName, firstName, email, birthDate, address } = this.form.getRawValue();
+    const { userName, lastName, firstName, email, birthDate, address } = this.form.getRawValue();
     const hasAddress = !!(address.streetName || address.city || address.postalCode);
 
     const request: UserRequest = {
+      userName,
       lastName,
       firstName,
       email,
