@@ -1,0 +1,83 @@
+@if (state$ | async; as state) {
+  @if (state.loading) {
+    <p class="status">Chargement…</p>
+  } @else if (state.error) {
+    <p class="status error">{{ state.error }}</p>
+    <a routerLink="/users">← Retour à la liste</a>
+  } @else {
+    @if (state.user; as user) {
+      <div class="user-view">
+        <div class="view-header">
+          <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+          <div class="view-actions">
+            <a [routerLink]="['/users', user.id, 'edit']" class="btn-edit">Modifier</a>
+            <a routerLink="/users">← Retour à la liste</a>
+          </div>
+        </div>
+
+        <section>
+          <h3>Identité</h3>
+          <dl>
+            <dt>Nom</dt>
+            <dd>{{ user.lastName }}</dd>
+
+            <dt>Prénom</dt>
+            <dd>{{ user.firstName }}</dd>
+
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ user.email }}">{{ user.email }}</a></dd>
+
+            @if (user.birthDate) {
+              <dt>Date de naissance</dt>
+              <dd>{{ user.birthDate | date:'dd/MM/yyyy' }}</dd>
+            }
+          </dl>
+        </section>
+
+        @if (user.address) {
+          <section>
+            <h3>Adresse</h3>
+            <dl>
+              @if (user.address.streetNumber) {
+                <dt>N°</dt>
+                <dd>{{ user.address.streetNumber }}</dd>
+              }
+              <dt>Rue</dt>
+              <dd>{{ user.address.streetName }}</dd>
+              @if (user.address.additionalInfo) {
+                <dt>Complément</dt>
+                <dd>{{ user.address.additionalInfo }}</dd>
+              }
+              <dt>Code postal</dt>
+              <dd>{{ user.address.postalCode }}</dd>
+              <dt>Ville</dt>
+              <dd>{{ user.address.city }}</dd>
+              @if (user.address.country) {
+                <dt>Pays</dt>
+                <dd>{{ user.address.country }}</dd>
+              }
+            </dl>
+          </section>
+        }
+
+        @if (user.auditData) {
+          <section class="audit">
+            <h3>Audit</h3>
+            <dl>
+              <dt>Créé le</dt>
+              <dd>{{ user.auditData.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+              <dt>Créé par</dt>
+              <dd>{{ user.auditData.createdBy }}</dd>
+              <dt>Modifié le</dt>
+              <dd>{{ user.auditData.updatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+              <dt>Modifié par</dt>
+              <dd>{{ user.auditData.updatedBy }}</dd>
+              <dt>Version</dt>
+              <dd>{{ user.auditData.version }}</dd>
+            </dl>
+          </section>
+        }
+      </div>
+    }
+  }
+}

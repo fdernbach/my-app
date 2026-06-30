@@ -1,0 +1,16 @@
+# Backend — build outputs
+**/target/
+**/*.jar
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Claude Code
+.claude/

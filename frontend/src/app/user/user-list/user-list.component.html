@@ -1,0 +1,77 @@
+<div class="list-header">
+  <h2>Utilisateurs</h2>
+  <a routerLink="/users/new" class="btn-create">+ Nouvel utilisateur</a>
+</div>
+
+@if (deleteError()) {
+  <p class="status error">{{ deleteError() }}</p>
+}
+
+@if (state$ | async; as state) {
+  @if (state.loading) {
+    <p class="status">Chargement…</p>
+  } @else if (state.error) {
+    <p class="status error">{{ state.error }}</p>
+  } @else if (state.page) {
+    @if (state.page.totalElements === 0) {
+      <p class="status">Aucun utilisateur.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of state.page.content; track user.id) {
+            <tr>
+              <td><a [routerLink]="['/users', user.id]">{{ user.lastName }}</a></td>
+              <td>{{ user.firstName }}</td>
+              <td>{{ user.email }}</td>
+              <td class="col-actions">
+                <button class="btn-delete" (click)="openDeleteDialog(user)">Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <div class="pagination">
+      <div class="pagination-size">
+        <label for="pageSize">Lignes par page :</label>
+        <select id="pageSize" (change)="changeSize(+$any($event.target).value)">
+          @for (opt of pageSizeOptions; track opt) {
+            <option [value]="opt" [selected]="opt === currentSize">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="pagination-nav">
+        <button (click)="goToPage(0)" [disabled]="state.page.first" title="Première page">«</button>
+        <button (click)="goToPage(currentPage - 1)" [disabled]="state.page.first" title="Page précédente">‹</button>
+        <span class="pagination-info">
+          Page {{ state.page.pageNumber + 1 }} / {{ state.page.totalPages || 1 }}
+        </span>
+        <button (click)="goToPage(currentPage + 1)" [disabled]="state.page.last" title="Page suivante">›</button>
+        <button (click)="goToPage(state.page.totalPages - 1)" [disabled]="state.page.last" title="Dernière page">»</button>
+      </div>
+
+      <span class="pagination-total">{{ state.page.totalElements }} utilisateur(s)</span>
+    </div>
+  }
+}
+
+@if (pendingDelete()) {
+  <app-confirm-dialog
+    title="Supprimer l'utilisateur"
+    [message]="'Voulez-vous vraiment supprimer ' + pendingDelete()!.firstName + ' ' + pendingDelete()!.lastName + ' ? Cette action est irréversible.'"
+    confirmLabel="Supprimer"
+    [confirming]="deleting()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

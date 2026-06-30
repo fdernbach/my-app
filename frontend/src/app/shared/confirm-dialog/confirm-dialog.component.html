@@ -1,0 +1,14 @@
+<div class="overlay" (click)="cancelled.emit()">
+  <div class="dialog" role="dialog" [attr.aria-label]="title" (click)="$event.stopPropagation()">
+    <h3 class="dialog-title">{{ title }}</h3>
+    <p class="dialog-message">{{ message }}</p>
+    <div class="dialog-actions">
+      <button class="btn-confirm" (click)="confirmed.emit()" [disabled]="confirming">
+        {{ confirming ? 'Suppression…' : confirmLabel }}
+      </button>
+      <button class="btn-cancel" (click)="cancelled.emit()" [disabled]="confirming">
+        {{ cancelLabel }}
+      </button>
+    </div>
+  </div>
+</div>

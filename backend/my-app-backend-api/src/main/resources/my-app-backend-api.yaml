@@ -1,0 +1,255 @@
+openapi: 3.0.3
+info:
+  title: my-app API
+  version: 0.0.1-SNAPSHOT
+
+tags:
+  - name: Users
+    description: User management
+
+paths:
+  /users:
+    get:
+      tags: [Users]
+      operationId: listUsers
+      summary: List users with pagination
+      parameters:
+        - name: page
+          in: query
+          description: Zero-based page index
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+      responses:
+        '200':
+          description: Paginated list of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPage'
+
+    post:
+      tags: [Users]
+      operationId: createUser
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      tags: [Users]
+      operationId: getUserById
+      summary: Get a user by ID
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      tags: [Users]
+      operationId: updateUser
+      summary: Update a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+
+    delete:
+      tags: [Users]
+      operationId: deleteUser
+      summary: Delete a user
+      responses:
+        '204':
+          description: User deleted
+        '404':
+          description: User not found
+
+components:
+  schemas:
+
+    Address:
+      type: object
+      required:
+        - streetName
+        - postalCode
+        - city
+      properties:
+        streetNumber:
+          type: string
+          example: "12"
+        streetName:
+          type: string
+          example: "Rue de la Paix"
+        additionalInfo:
+          type: string
+          description: Complement d'adresse (batiment, etage, etc.)
+          example: "Batiment B, Appartement 42"
+        postalCode:
+          type: string
+          pattern: '^\d{5}$'
+          example: "75001"
+        city:
+          type: string
+          example: "Paris"
+        country:
+          type: string
+          default: "France"
+          example: "France"
+
+    AuditData:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: "2024-01-15T10:30:00Z"
+        createdBy:
+          type: string
+          readOnly: true
+          example: "admin"
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: "2024-01-15T10:30:00Z"
+        updatedBy:
+          type: string
+          readOnly: true
+          example: "admin"
+        version:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 0
+
+    User:
+      type: object
+      required:
+        - id
+        - lastName
+        - firstName
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        lastName:
+          type: string
+          example: "Dupont"
+        firstName:
+          type: string
+          example: "Jean"
+        email:
+          type: string
+          format: email
+          example: "jean.dupont@example.com"
+        birthDate:
+          type: string
+          format: date
+          example: "1985-06-15"
+        address:
+          $ref: '#/components/schemas/Address'
+        auditData:
+          $ref: '#/components/schemas/AuditData'
+
+    UserPage:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - pageNumber
+        - pageSize
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+
+    UserRequest:
+      type: object
+      required:
+        - lastName
+        - firstName
+        - email
+      properties:
+        lastName:
+          type: string
+          example: "Dupont"
+        firstName:
+          type: string
+          example: "Jean"
+        email:
+          type: string
+          format: email
+          example: "jean.dupont@example.com"
+        birthDate:
+          type: string
+          format: date
+          example: "1985-06-15"
+        address:
+          $ref: '#/components/schemas/Address'

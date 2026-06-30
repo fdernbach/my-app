@@ -1,0 +1,92 @@
+<div class="user-create">
+  <h2>Nouvel utilisateur</h2>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <fieldset>
+      <legend>Identité</legend>
+
+      <div class="field">
+        <label for="lastName">Nom *</label>
+        <input id="lastName" formControlName="lastName" />
+        @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+          <span class="field-error">Le nom est obligatoire.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="firstName">Prénom *</label>
+        <input id="firstName" formControlName="firstName" />
+        @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+          <span class="field-error">Le prénom est obligatoire.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email *</label>
+        <input id="email" type="email" formControlName="email" />
+        @if (form.controls.email.touched) {
+          @if (form.controls.email.hasError('required')) {
+            <span class="field-error">L'email est obligatoire.</span>
+          } @else if (form.controls.email.hasError('email')) {
+            <span class="field-error">Format d'email invalide.</span>
+          }
+        }
+      </div>
+
+      <div class="field">
+        <label for="birthDate">Date de naissance</label>
+        <input id="birthDate" type="date" formControlName="birthDate" />
+      </div>
+    </fieldset>
+
+    <fieldset formGroupName="address">
+      <legend>Adresse (optionnelle)</legend>
+
+      <div class="field field--half">
+        <label for="streetNumber">N°</label>
+        <input id="streetNumber" formControlName="streetNumber" />
+      </div>
+
+      <div class="field">
+        <label for="streetName">Rue</label>
+        <input id="streetName" formControlName="streetName" />
+      </div>
+
+      <div class="field">
+        <label for="additionalInfo">Complément</label>
+        <input id="additionalInfo" formControlName="additionalInfo" />
+      </div>
+
+      <div class="field field--half">
+        <label for="postalCode">Code postal</label>
+        <input id="postalCode" formControlName="postalCode" maxlength="5" />
+        @if (form.controls.address.controls.postalCode.invalid && form.controls.address.controls.postalCode.touched) {
+          <span class="field-error">5 chiffres requis.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="city">Ville</label>
+        <input id="city" formControlName="city" />
+      </div>
+
+      <div class="field">
+        <label for="country">Pays</label>
+        <input id="country" formControlName="country" />
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Création…' : 'Créer' }}
+      </button>
+      <a routerLink="/users">Annuler</a>
+    </div>
+
+  </form>
+</div>
