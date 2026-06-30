@@ -13,7 +13,7 @@ Application de démonstration full-stack en cours de développement, entièremen
 | Backend   | Java 21 · Spring Boot 3.5          |
 | API       | OpenAPI 3.0 (contract-first)       |
 | Frontend  | Angular 18 (standalone components) |
-| Base de données (dev) | H2 in-memory          |
+| Base de données       | PostgreSQL 16          |
 
 ---
 
@@ -22,15 +22,16 @@ Application de démonstration full-stack en cours de développement, entièremen
 - **Architecture hexagonale** : séparation domaine / ports / adapters
 - **Maven multi-module** : `my-app-backend-api` (contrat OpenAPI) + `my-app-backend` (implémentation)
 - **OpenAPI Generator** (`openapi-generator-maven-plugin`) : génération de l'interface Spring MVC depuis le YAML
-- **Spring Data JPA** avec H2 (profil `dev`) : entités, `JpaRepository`, optimistic locking (`@Version`)
+- **Spring Data JPA** avec PostgreSQL 16 : entités, `JpaRepository`, optimistic locking (`@Version`)
 - **JPA Auditing** (`@EnableJpaAuditing`) : remplissage automatique de `createdAt`, `createdBy`, `updatedAt`, `updatedBy` via `AuditorAware` et `DateTimeProvider`
 - **Pagination** : `Pageable` / `PageRequest` Spring Data, exposée via `GET /users?page=0&size=10`
 - **MapStruct** : mapping entre entités JPA, modèles domaine et DTOs OpenAPI
 - **Spring Security** : Basic Auth (utilisateur `admin` en profil dev)
 - **Spring Boot Actuator** : endpoint `/actuator/health`
 - **RFC 7807 Problem Details** (`ProblemDetail`, `ResponseEntityExceptionHandler`) : réponses d'erreur standardisées avec `type`, `title`, `status`, `detail`, `instance` — erreurs de validation enrichies avec un tableau `errors[]` par champ
+- **Testcontainers** : conteneur PostgreSQL éphémère démarré automatiquement pour tous les tests (`@Testcontainers` + `@ServiceConnection`) — aucune base de données externe requise pour les tests
 - **Tests d'intégration** :
-  - `@DataJpaTest` pour la couche JPA
+  - `@DataJpaTest` + `@AutoConfigureTestDatabase(replace=NONE)` pour la couche JPA sur PostgreSQL réel
   - `@SpringBootTest(webEnvironment=NONE)` pour la couche service
   - `@SpringBootTest(webEnvironment=MOCK)` + `@AutoConfigureMockMvc` pour la couche REST
   - `@WithMockUser` (Spring Security Test)
@@ -57,8 +58,17 @@ Application de démonstration full-stack en cours de développement, entièremen
 
 ### Backend
 ```bash
+# Démarrer PostgreSQL (Docker requis)
+docker run -d --name myappdb \
+  -e POSTGRES_DB=myappdb -e POSTGRES_USER=myapp -e POSTGRES_PASSWORD=myapp \
+  -p 5432:5432 postgres:16
+
+# Si le conteneur existe déjà (arrêté)
+docker start myappdb
+
+# Démarrer le backend
 cd backend
-mvn spring-boot:run -pl my-app-backend -Pdev
+mvn spring-boot:run -pl my-app-backend
 # API disponible sur http://localhost:8080
 # Credentials : admin / admin
 ```
