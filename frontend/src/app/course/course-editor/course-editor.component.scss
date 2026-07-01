@@ -2,9 +2,9 @@
 .course-editor {
   border: 1px solid #ccc;
   border-radius: 6px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 /* ── Toolbar ────────────────────────────────────────────────────────────── */
@@ -16,6 +16,9 @@
   padding: 0.5rem 0.75rem;
   background: #f5f5f5;
   border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 52px;   /* hauteur de la nav bar */
+  z-index: 10;
 }
 
 .ce-toolbar__group {
@@ -58,6 +61,9 @@
   padding: 0.35rem 0.75rem;
   background: #fafafa;
   border-bottom: 1px solid #eee;
+  position: sticky;
+  top: calc(52px + 42px);  /* nav + ce-toolbar height */
+  z-index: 9;
 }
 
 .ce-math-btn {
@@ -79,7 +85,8 @@
 /* ── ProseMirror mount / content area ───────────────────────────────────── */
 .ce-content {
   flex: 1;
-  min-height: 400px;
+  height: calc(100vh - 360px);
+  min-height: 420px;
   padding: 1.25rem 1.5rem;
   background: #fff;
   overflow-y: auto;
