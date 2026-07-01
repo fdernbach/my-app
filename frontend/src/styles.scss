@@ -1,3 +1,6 @@
+/* ── MathLive virtual keyboard — z-index au-dessus de tout modal ─────────── */
+:root { --keyboard-zindex: 2500; }
+
 /* ── Reset & base ────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

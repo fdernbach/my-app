@@ -82,3 +82,29 @@
   <div #editorEl class="ce-content"></div>
 
 </div>
+
+<!-- ── Inline math dialog ──────────────────────────────────────────────────── -->
+@if (mathDialogOpen()) {
+  <div class="imd-overlay" (click)="onDialogOverlayClick($event)">
+    <div class="imd-modal" role="dialog" aria-modal="true" aria-label="Modifier la formule">
+
+      <h3 class="imd-title">Modifier la formule inline</h3>
+
+      <div class="imd-section">
+        <label class="imd-label">Aperçu</label>
+        <div class="imd-preview"></div>
+      </div>
+
+      <div class="imd-section">
+        <label class="imd-label">LaTeX</label>
+        <math-field class="imd-mathfield" virtual-keyboard-mode="onfocus"></math-field>
+      </div>
+
+      <div class="imd-actions">
+        <button type="button" class="imd-btn imd-btn--cancel" (click)="closeMathDialog()">Annuler</button>
+        <button type="button" class="imd-btn imd-btn--confirm" (click)="confirmMathDialog()">Valider</button>
+      </div>
+
+    </div>
+  </div>
+}

@@ -1,6 +1,6 @@
 import {
-  Component, ElementRef, EventEmitter, Input, OnDestroy, AfterViewInit,
-  Output, ViewChild, ViewEncapsulation,
+  Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, HostListener,
+  Input, OnDestroy, AfterViewInit, Output, ViewChild, ViewEncapsulation, signal,
 } from '@angular/core';
 import { Editor } from '@tiptap/core';
 import { StarterKit } from '@tiptap/starter-kit';
@@ -11,6 +11,7 @@ import { Table } from '@tiptap/extension-table';
 import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
+import katex from 'katex';
 
 import {
   Chapitre, Section, SousSection,
@@ -35,6 +36,7 @@ type BlockCommand =
   templateUrl: './course-editor.component.html',
   styleUrl: './course-editor.component.scss',
   encapsulation: ViewEncapsulation.None,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CourseEditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editorEl') editorEl!: ElementRef<HTMLDivElement>;
@@ -51,6 +53,10 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
 
   private _initialContent: Record<string, unknown> | null = null;
   editor?: Editor;
+
+  // ── Inline math dialog ────────────────────────────────────────────────────
+  readonly mathDialogOpen = signal(false);
+  private _mathDialogPos: number | null = null;
 
   readonly structuralBlocks: { cmd: BlockCommand; label: string }[] = [
     { cmd: 'chapitre',    label: 'Chapitre'     },
@@ -76,31 +82,31 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
   ];
 
   readonly mathShortcuts: { label: string; latex: string; title: string }[] = [
-    { label: 'ℝ',  latex: '\\mathbb{R}', title: '\\mathbb{R}'  },
-    { label: 'ℕ',  latex: '\\mathbb{N}', title: '\\mathbb{N}'  },
-    { label: 'ℤ',  latex: '\\mathbb{Z}', title: '\\mathbb{Z}'  },
-    { label: 'ℚ',  latex: '\\mathbb{Q}', title: '\\mathbb{Q}'  },
-    { label: 'ℂ',  latex: '\\mathbb{C}', title: '\\mathbb{C}'  },
-    { label: '∞',  latex: '\\infty',     title: '\\infty'      },
-    { label: '∈',  latex: '\\in',        title: '\\in'         },
-    { label: '∉',  latex: '\\notin',     title: '\\notin'      },
-    { label: '⊂',  latex: '\\subset',    title: '\\subset'     },
-    { label: '⊆',  latex: '\\subseteq',  title: '\\subseteq'   },
-    { label: '∅',  latex: '\\emptyset',  title: '\\emptyset'   },
-    { label: '∀',  latex: '\\forall',    title: '\\forall'     },
-    { label: '∃',  latex: '\\exists',    title: '\\exists'     },
-    { label: '⇒',  latex: '\\Rightarrow', title: '\\Rightarrow' },
-    { label: '⟺',  latex: '\\Leftrightarrow', title: '\\Leftrightarrow' },
-    { label: 'α',  latex: '\\alpha',     title: '\\alpha'      },
-    { label: 'β',  latex: '\\beta',      title: '\\beta'       },
-    { label: 'γ',  latex: '\\gamma',     title: '\\gamma'      },
-    { label: 'δ',  latex: '\\delta',     title: '\\delta'      },
-    { label: 'ε',  latex: '\\varepsilon', title: '\\varepsilon' },
-    { label: 'λ',  latex: '\\lambda',    title: '\\lambda'     },
-    { label: 'π',  latex: '\\pi',        title: '\\pi'         },
-    { label: 'σ',  latex: '\\sigma',     title: '\\sigma'      },
-    { label: 'θ',  latex: '\\theta',     title: '\\theta'      },
-    { label: '±',  latex: '\\pm',        title: '\\pm'         },
+    { label: 'ℝ',  latex: '\\mathbb{R}',       title: '\\mathbb{R}'       },
+    { label: 'ℕ',  latex: '\\mathbb{N}',       title: '\\mathbb{N}'       },
+    { label: 'ℤ',  latex: '\\mathbb{Z}',       title: '\\mathbb{Z}'       },
+    { label: 'ℚ',  latex: '\\mathbb{Q}',       title: '\\mathbb{Q}'       },
+    { label: 'ℂ',  latex: '\\mathbb{C}',       title: '\\mathbb{C}'       },
+    { label: '∞',  latex: '\\infty',           title: '\\infty'           },
+    { label: '∈',  latex: '\\in',              title: '\\in'              },
+    { label: '∉',  latex: '\\notin',           title: '\\notin'           },
+    { label: '⊂',  latex: '\\subset',          title: '\\subset'          },
+    { label: '⊆',  latex: '\\subseteq',        title: '\\subseteq'        },
+    { label: '∅',  latex: '\\emptyset',        title: '\\emptyset'        },
+    { label: '∀',  latex: '\\forall',          title: '\\forall'          },
+    { label: '∃',  latex: '\\exists',          title: '\\exists'          },
+    { label: '⇒',  latex: '\\Rightarrow',      title: '\\Rightarrow'      },
+    { label: '⟺',  latex: '\\Leftrightarrow',  title: '\\Leftrightarrow'  },
+    { label: 'α',  latex: '\\alpha',           title: '\\alpha'           },
+    { label: 'β',  latex: '\\beta',            title: '\\beta'            },
+    { label: 'γ',  latex: '\\gamma',           title: '\\gamma'           },
+    { label: 'δ',  latex: '\\delta',           title: '\\delta'           },
+    { label: 'ε',  latex: '\\varepsilon',      title: '\\varepsilon'      },
+    { label: 'λ',  latex: '\\lambda',          title: '\\lambda'          },
+    { label: 'π',  latex: '\\pi',              title: '\\pi'              },
+    { label: 'σ',  latex: '\\sigma',           title: '\\sigma'           },
+    { label: 'θ',  latex: '\\theta',           title: '\\theta'           },
+    { label: '±',  latex: '\\pm',              title: '\\pm'              },
   ];
 
   ngAfterViewInit(): void {
@@ -116,12 +122,7 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
             onClick: (_node, pos) => {
               const current = this.editor?.state.doc.nodeAt(pos);
               const latex = current?.attrs?.['latex'] ?? '';
-              const newLatex = window.prompt('Modifier la formule LaTeX :', latex);
-              if (newLatex !== null && this.editor) {
-                (this.editor.chain().focus() as any)
-                  .updateInlineMath({ latex: newLatex, pos })
-                  .run();
-              }
+              this.openMathDialog(latex, pos);
             },
           },
         }),
@@ -129,15 +130,9 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
         TableRow,
         TableCell,
         TableHeader,
-        Chapitre,
-        Section,
-        SousSection,
-        Definition,
-        Theoreme,
-        Demonstration,
-        Exemple,
-        Exercice,
-        Solution,
+        Chapitre, Section, SousSection,
+        Definition, Theoreme, Demonstration,
+        Exemple, Exercice, Solution,
         EquationNode,
         ImageNode,
         SingleDollarMath,
@@ -153,6 +148,57 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
     this.editor?.destroy();
   }
 
+  // ── Inline math dialog ─────────────────────────────────────────────────────
+
+  openMathDialog(latex: string, pos: number): void {
+    this._mathDialogPos = pos;
+    this.mathDialogOpen.set(true);
+    setTimeout(() => {
+      const mf = document.querySelector<any>('.imd-mathfield');
+      if (!mf) return;
+      mf.value = latex;
+      mf.focus();
+      mf.addEventListener('input', () => this._renderMathPreview(mf.value));
+      this._renderMathPreview(latex);
+    }, 0);
+  }
+
+  private _renderMathPreview(latex: string): void {
+    const el = document.querySelector<HTMLElement>('.imd-preview');
+    if (!el) return;
+    katex.render(latex || '\\,', el, { displayMode: true, throwOnError: false });
+  }
+
+  confirmMathDialog(): void {
+    const mf = document.querySelector<any>('.imd-mathfield');
+    const latex = (mf?.value ?? '').trim();
+    if (latex && this.editor && this._mathDialogPos !== null) {
+      (this.editor.chain().focus() as any)
+        .updateInlineMath({ latex, pos: this._mathDialogPos })
+        .run();
+    }
+    this.closeMathDialog();
+  }
+
+  closeMathDialog(): void {
+    this.mathDialogOpen.set(false);
+    this._mathDialogPos = null;
+    setTimeout(() => this.editor?.commands.focus(), 0);
+  }
+
+  onDialogOverlayClick(e: MouseEvent): void {
+    if ((e.target as HTMLElement).classList.contains('imd-overlay')) {
+      this.closeMathDialog();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.mathDialogOpen()) this.closeMathDialog();
+  }
+
+  // ── Toolbar actions ────────────────────────────────────────────────────────
+
   insertMathShortcut(latex: string): void {
     if (!this.editor) return;
     (this.editor.chain().focus() as any).insertInlineMath({ latex }).run();
@@ -163,15 +209,16 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
   toggleUnderline() { this.editor?.chain().focus().toggleUnderline().run(); }
   toggleStrike()    { this.editor?.chain().focus().toggleStrike().run(); }
 
-  setAlign(align: 'left' | 'center' | 'right') {
+  setAlign(align: 'left' | 'center' | 'right'): void {
     this.editor?.chain().focus().setTextAlign(align).run();
   }
 
   isAligned(align: string): boolean {
     return this.editor?.isActive({ textAlign: align }) ?? false;
   }
-  undo()         { this.editor?.chain().focus().undo().run(); }
-  redo()         { this.editor?.chain().focus().redo().run(); }
+
+  undo() { this.editor?.chain().focus().undo().run(); }
+  redo() { this.editor?.chain().focus().redo().run(); }
 
   isActive(mark: string): boolean {
     return this.editor?.isActive(mark) ?? false;
@@ -192,8 +239,6 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
         return;
     }
 
-    // For course-specific blocks: insert after the current leaf block if cursor is inside one.
-    // This allows "Démonstration" to appear as a sibling of "Théorème", not nested inside it.
     const LEAF_BLOCKS = new Set([
       'definition', 'theoreme', 'demonstration',
       'exemple', 'exercice', 'solution',
@@ -204,11 +249,10 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
     const { $from } = state.selection;
     const schema = state.schema;
 
-    // Walk up from cursor to find if we're inside a leaf block
     let insertAfterPos: number | null = null;
     for (let depth = $from.depth; depth >= 1; depth--) {
       if (LEAF_BLOCKS.has($from.node(depth).type.name)) {
-        insertAfterPos = $from.after(depth); // position just after the leaf block
+        insertAfterPos = $from.after(depth);
         break;
       }
     }
@@ -225,10 +269,8 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
 
     const tr = state.tr;
     if (insertAfterPos !== null) {
-      // Insert as sibling after the current leaf block
       tr.insert(insertAfterPos, newNode);
     } else {
-      // Insert at cursor position
       tr.replaceSelectionWith(newNode);
     }
     this.editor.view.dispatch(tr.scrollIntoView());
