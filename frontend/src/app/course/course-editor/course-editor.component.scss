@@ -59,10 +59,6 @@
 .ce-toolbar button:hover  { background: #e8e8e8; }
 .ce-toolbar button.active { background: #1565c0; color: #fff; border-color: #1565c0; }
 
-.ce-toolbar__save-btn {
-  font-size: 1rem;
-  line-height: 1;
-}
 
 /* ── Math shortcuts toolbar (ligne 2) ───────────────────────────────────── */
 .ce-math-toolbar {
@@ -74,14 +70,6 @@
   border-bottom: 1px solid #eee;
 }
 
-/* ── Save toolbar (ligne 3) ─────────────────────────────────────────────── */
-.ce-save-toolbar {
-  display: flex;
-  align-items: center;
-  padding: 0.3rem 0.75rem;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-}
 
 .ce-math-btn {
   padding: 0.2rem 0.45rem;
