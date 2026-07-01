@@ -206,11 +206,24 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  @HostListener('document:keydown.escape')
-  onEscapeKey(): void {
+  @HostListener('document:keydown.control.s', ['$event'])
+  onCtrlS(e: KeyboardEvent): void {
+    if (this.mathDialogOpen()) return;
+    e.preventDefault();
+    this.save.emit();
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  onEnterKey(e: KeyboardEvent): void {
     if (!this.mathDialogOpen()) return;
-    // Ne pas fermer si le focus est dans le champ MathLive
-    if (document.activeElement?.tagName.toLowerCase() === 'math-field') return;
+    e.preventDefault();
+    this.confirmMathDialog();
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(e: KeyboardEvent): void {
+    if (!this.mathDialogOpen()) return;
+    e.preventDefault();
     this.closeMathDialog();
   }
 
