@@ -7,7 +7,16 @@
   width: 100%;
 }
 
-/* ── Toolbar ────────────────────────────────────────────────────────────── */
+/* ── Toolbars sticky wrapper ─────────────────────────────────────────────── */
+.ce-toolbars {
+  position: sticky;
+  top: 52px;   /* hauteur de la nav bar */
+  z-index: 10;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+}
+
+/* ── Toolbar ligne 1 ────────────────────────────────────────────────────── */
 .ce-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -16,9 +25,6 @@
   padding: 0.5rem 0.75rem;
   background: #f5f5f5;
   border-bottom: 1px solid #ddd;
-  position: sticky;
-  top: 52px;   /* hauteur de la nav bar */
-  z-index: 10;
 }
 
 .ce-toolbar__group {
@@ -53,7 +59,12 @@
 .ce-toolbar button:hover  { background: #e8e8e8; }
 .ce-toolbar button.active { background: #1565c0; color: #fff; border-color: #1565c0; }
 
-/* ── Math shortcuts toolbar ─────────────────────────────────────────────── */
+.ce-toolbar__save-btn {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ── Math shortcuts toolbar (ligne 2) ───────────────────────────────────── */
 .ce-math-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -61,9 +72,15 @@
   padding: 0.35rem 0.75rem;
   background: #fafafa;
   border-bottom: 1px solid #eee;
-  position: sticky;
-  top: calc(52px + 42px);  /* nav + ce-toolbar height */
-  z-index: 9;
+}
+
+/* ── Save toolbar (ligne 3) ─────────────────────────────────────────────── */
+.ce-save-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
 }
 
 .ce-math-btn {

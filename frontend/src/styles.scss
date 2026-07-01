@@ -161,3 +161,26 @@ td {
 tr:hover td { background: #f5f7ff; }
 
 .text-muted { color: #777; font-style: italic; }
+
+/* ── Toast notification ──────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 9999;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  max-width: 380px;
+  animation: toast-in 0.2s ease;
+
+  &--success { background: #2e7d32; color: #fff; }
+  &--error   { background: #c62828; color: #fff; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

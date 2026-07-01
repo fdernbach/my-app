@@ -47,6 +47,7 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   @Output() contentChange = new EventEmitter<Record<string, unknown>>();
+  @Output() save = new EventEmitter<void>();
 
   private _initialContent: Record<string, unknown> | null = null;
   editor?: Editor;

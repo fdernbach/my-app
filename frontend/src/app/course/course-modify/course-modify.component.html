@@ -1,3 +1,9 @@
+@if (toast()) {
+  <div class="toast" [class.toast--success]="toast()!.type === 'success'" [class.toast--error]="toast()!.type === 'error'">
+    {{ toast()!.message }}
+  </div>
+}
+
 @if (loadError()) {
   <p class="status error">{{ loadError() }}</p>
   <a routerLink="/courses">← Retour à la liste</a>
@@ -42,6 +48,7 @@
         <app-course-editor
           [content]="initialDocumentJson"
           (contentChange)="onEditorChange($event)"
+          (save)="quickSave()"
         />
       </div>
 

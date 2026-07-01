@@ -1,69 +1,81 @@
 <div class="course-editor">
 
-  <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
-  <div class="ce-toolbar">
+  <!-- ── Toolbars (sticky bloc) ────────────────────────────────────────────── -->
+  <div class="ce-toolbars">
 
-    <div class="ce-toolbar__group">
-      <button type="button" (click)="toggleBold()"   [class.active]="isActive('bold')"   title="Gras (Ctrl+B)">     <b>B</b>  </button>
-      <button type="button" (click)="toggleItalic()"    [class.active]="isActive('italic')"    title="Italique (Ctrl+I)">   <i>I</i>  </button>
-      <button type="button" (click)="toggleUnderline()" [class.active]="isActive('underline')" title="Souligné (Ctrl+U)">   <u>S</u>  </button>
-      <button type="button" (click)="toggleStrike()"    [class.active]="isActive('strike')"    title="Barré">               <s>S</s>  </button>
+    <!-- Ligne 1 : mise en forme + blocs + undo/redo -->
+    <div class="ce-toolbar">
+
+      <div class="ce-toolbar__group">
+        <button type="button" (click)="toggleBold()"      [class.active]="isActive('bold')"      title="Gras (Ctrl+B)">     <b>B</b>  </button>
+        <button type="button" (click)="toggleItalic()"    [class.active]="isActive('italic')"    title="Italique (Ctrl+I)"> <i>I</i>  </button>
+        <button type="button" (click)="toggleUnderline()" [class.active]="isActive('underline')" title="Souligné (Ctrl+U)"> <u>S</u>  </button>
+        <button type="button" (click)="toggleStrike()"    [class.active]="isActive('strike')"    title="Barré">             <s>S</s>  </button>
+      </div>
+
+      <div class="ce-toolbar__separator"></div>
+
+      <div class="ce-toolbar__group">
+        <button type="button" (click)="setAlign('left')"   [class.active]="isAligned('left')"   title="Aligner à gauche">&#8592; G</button>
+        <button type="button" (click)="setAlign('center')" [class.active]="isAligned('center')" title="Centrer">&#8596; C</button>
+        <button type="button" (click)="setAlign('right')"  [class.active]="isAligned('right')"  title="Aligner à droite">D &#8594;</button>
+      </div>
+
+      <div class="ce-toolbar__separator"></div>
+
+      <div class="ce-toolbar__group ce-toolbar__group--structural">
+        @for (b of structuralBlocks; track b.cmd) {
+          <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">
+            + {{ b.label }}
+          </button>
+        }
+      </div>
+
+      <div class="ce-toolbar__separator"></div>
+
+      <div class="ce-toolbar__group">
+        @for (b of contentBlocks; track b.cmd) {
+          <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">
+            + {{ b.label }}
+          </button>
+        }
+      </div>
+
+      <div class="ce-toolbar__separator"></div>
+
+      <div class="ce-toolbar__group">
+        @for (b of specialBlocks; track b.cmd) {
+          <button type="button" (click)="insertBlock(b.cmd)" [title]="b.title ?? b.label">
+            {{ b.label }}
+          </button>
+        }
+      </div>
+
+      <div class="ce-toolbar__separator"></div>
+
+      <div class="ce-toolbar__group">
+        <button type="button" (click)="undo()" title="Annuler (Ctrl+Z)">↩</button>
+        <button type="button" (click)="redo()" title="Refaire (Ctrl+Y)">↪</button>
+      </div>
+
     </div>
 
-    <div class="ce-toolbar__separator"></div>
-
-    <div class="ce-toolbar__group">
-      <button type="button" (click)="setAlign('left')"   [class.active]="isAligned('left')"   title="Aligner à gauche">&#8592; G</button>
-      <button type="button" (click)="setAlign('center')" [class.active]="isAligned('center')" title="Centrer">&#8596; C</button>
-      <button type="button" (click)="setAlign('right')"  [class.active]="isAligned('right')"  title="Aligner à droite">D &#8594;</button>
-    </div>
-
-    <div class="ce-toolbar__separator"></div>
-
-    <div class="ce-toolbar__group ce-toolbar__group--structural">
-      @for (b of structuralBlocks; track b.cmd) {
-        <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">
-          + {{ b.label }}
+    <!-- Ligne 2 : raccourcis mathématiques -->
+    <div class="ce-math-toolbar">
+      @for (s of mathShortcuts; track s.latex) {
+        <button type="button" class="ce-math-btn" [title]="s.title" (click)="insertMathShortcut(s.latex)">
+          {{ s.label }}
         </button>
       }
     </div>
 
-    <div class="ce-toolbar__separator"></div>
-
-    <div class="ce-toolbar__group">
-      @for (b of contentBlocks; track b.cmd) {
-        <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">
-          + {{ b.label }}
-        </button>
-      }
-    </div>
-
-    <div class="ce-toolbar__separator"></div>
-
-    <div class="ce-toolbar__group">
-      @for (b of specialBlocks; track b.cmd) {
-        <button type="button" (click)="insertBlock(b.cmd)" [title]="b.title ?? b.label">
-          {{ b.label }}
-        </button>
-      }
-    </div>
-
-    <div class="ce-toolbar__separator"></div>
-
-    <div class="ce-toolbar__group">
-      <button type="button" (click)="undo()" title="Annuler (Ctrl+Z)">↩</button>
-      <button type="button" (click)="redo()" title="Refaire (Ctrl+Y)">↪</button>
-    </div>
-
-  </div>
-
-  <!-- ── Math shortcuts toolbar ───────────────────────────────────────────── -->
-  <div class="ce-math-toolbar">
-    @for (s of mathShortcuts; track s.latex) {
-      <button type="button" class="ce-math-btn" [title]="s.title" (click)="insertMathShortcut(s.latex)">
-        {{ s.label }}
+    <!-- Ligne 3 : sauvegarde rapide -->
+    <div class="ce-save-toolbar">
+      <button type="button" class="ce-toolbar__save-btn" (click)="save.emit()" title="Enregistrer (Ctrl+S)">
+        💾
       </button>
-    }
+    </div>
+
   </div>
 
   <!-- ── ProseMirror mount point ─────────────────────────────────────────── -->

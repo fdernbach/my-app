@@ -1,3 +1,9 @@
+@if (toast()) {
+  <div class="toast" [class.toast--success]="toast()!.type === 'success'" [class.toast--error]="toast()!.type === 'error'">
+    {{ toast()!.message }}
+  </div>
+}
+
 <div class="course-create">
   <h2>Nouveau cours</h2>
 
@@ -33,7 +39,7 @@
 
     <div class="field">
       <label>Contenu du cours</label>
-      <app-course-editor (contentChange)="onEditorChange($event)" />
+      <app-course-editor (contentChange)="onEditorChange($event)" (save)="quickSave()" />
     </div>
 
     <div class="actions">
