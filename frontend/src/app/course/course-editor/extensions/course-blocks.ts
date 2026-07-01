@@ -3,7 +3,7 @@ import { Node, NodeViewRendererProps } from '@tiptap/core';
 export type CourseBlockType =
   | 'chapitre' | 'section' | 'sous_section'
   | 'definition' | 'theoreme' | 'demonstration'
-  | 'exemple' | 'exercice' | 'solution';
+  | 'exemple' | 'exercice' | 'solution' | 'remarque';
 
 const BLOCK_META: Record<CourseBlockType, { label: string; color: string; hasTitle: boolean }> = {
   chapitre:      { label: 'Chapitre',      color: '#1565c0', hasTitle: true  },
@@ -15,6 +15,7 @@ const BLOCK_META: Record<CourseBlockType, { label: string; color: string; hasTit
   exemple:       { label: 'Exemple',       color: '#00695c', hasTitle: false },
   exercice:      { label: 'Exercice',      color: '#f57f17', hasTitle: false },
   solution:      { label: 'Solution',      color: '#558b2f', hasTitle: false },
+  remarque:      { label: 'Remarque',      color: '#0277bd', hasTitle: false },
 };
 
 function makeCourseBlock(name: CourseBlockType): Node {
@@ -107,3 +108,4 @@ export const Demonstration = makeCourseBlock('demonstration');
 export const Exemple       = makeCourseBlock('exemple');
 export const Exercice      = makeCourseBlock('exercice');
 export const Solution      = makeCourseBlock('solution');
+export const Remarque      = makeCourseBlock('remarque');

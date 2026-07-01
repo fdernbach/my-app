@@ -16,7 +16,7 @@ import katex from 'katex';
 import {
   Chapitre, Section, SousSection,
   Definition, Theoreme, Demonstration,
-  Exemple, Exercice, Solution,
+  Exemple, Exercice, Solution, Remarque,
 } from './extensions/course-blocks';
 import { EquationNode } from './extensions/equation-node';
 import { ImageNode } from './extensions/image-node';
@@ -25,7 +25,7 @@ import { SingleDollarMath } from './extensions/single-dollar-math';
 type BlockCommand =
   | 'chapitre' | 'section' | 'sous_section'
   | 'definition' | 'theoreme' | 'demonstration'
-  | 'exemple' | 'exercice' | 'solution'
+  | 'exemple' | 'exercice' | 'solution' | 'remarque'
   | 'equation' | 'image_block'
   | 'bulletList' | 'orderedList' | 'insertTable';
 
@@ -71,6 +71,7 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
     { cmd: 'exemple',       label: 'Exemple'      },
     { cmd: 'exercice',      label: 'Exercice'     },
     { cmd: 'solution',      label: 'Solution'     },
+    { cmd: 'remarque',      label: 'Remarque'     },
   ];
 
   readonly specialBlocks: { cmd: BlockCommand; label: string; title?: string }[] = [
@@ -132,7 +133,7 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
         TableHeader,
         Chapitre, Section, SousSection,
         Definition, Theoreme, Demonstration,
-        Exemple, Exercice, Solution,
+        Exemple, Exercice, Solution, Remarque,
         EquationNode,
         ImageNode,
         SingleDollarMath,
