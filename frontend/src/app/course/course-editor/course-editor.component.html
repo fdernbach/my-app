@@ -12,6 +12,14 @@
 
     <div class="ce-toolbar__separator"></div>
 
+    <div class="ce-toolbar__group">
+      <button type="button" (click)="setAlign('left')"   [class.active]="isAligned('left')"   title="Aligner à gauche">&#8592; G</button>
+      <button type="button" (click)="setAlign('center')" [class.active]="isAligned('center')" title="Centrer">&#8596; C</button>
+      <button type="button" (click)="setAlign('right')"  [class.active]="isAligned('right')"  title="Aligner à droite">D &#8594;</button>
+    </div>
+
+    <div class="ce-toolbar__separator"></div>
+
     <div class="ce-toolbar__group ce-toolbar__group--structural">
       @for (b of structuralBlocks; track b.cmd) {
         <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">

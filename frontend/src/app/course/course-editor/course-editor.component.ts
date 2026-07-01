@@ -6,6 +6,7 @@ import { Editor } from '@tiptap/core';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Mathematics } from '@tiptap/extension-mathematics';
 import { Underline } from '@tiptap/extension-underline';
+import { TextAlign } from '@tiptap/extension-text-align';
 import { Table } from '@tiptap/extension-table';
 import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
@@ -107,6 +108,7 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
       extensions: [
         StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
         Underline,
+        TextAlign.configure({ types: ['paragraph', 'heading'] }),
         Mathematics.configure({
           katexOptions: { throwOnError: false },
           inlineOptions: {
@@ -159,6 +161,14 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
   toggleItalic()    { this.editor?.chain().focus().toggleItalic().run(); }
   toggleUnderline() { this.editor?.chain().focus().toggleUnderline().run(); }
   toggleStrike()    { this.editor?.chain().focus().toggleStrike().run(); }
+
+  setAlign(align: 'left' | 'center' | 'right') {
+    this.editor?.chain().focus().setTextAlign(align).run();
+  }
+
+  isAligned(align: string): boolean {
+    return this.editor?.isActive({ textAlign: align }) ?? false;
+  }
   undo()         { this.editor?.chain().focus().undo().run(); }
   redo()         { this.editor?.chain().focus().redo().run(); }
 
