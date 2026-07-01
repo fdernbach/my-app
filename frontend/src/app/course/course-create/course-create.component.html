@@ -1,0 +1,48 @@
+<div class="course-create">
+  <h2>Nouveau cours</h2>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <fieldset>
+      <legend>Informations</legend>
+
+      <div class="field">
+        <label for="title">Titre *</label>
+        <input id="title" formControlName="title" maxlength="256" />
+        @if (form.controls.title.invalid && form.controls.title.touched) {
+          @if (form.controls.title.hasError('required')) {
+            <span class="field-error">Le titre est obligatoire.</span>
+          } @else if (form.controls.title.hasError('maxlength')) {
+            <span class="field-error">256 caractères maximum.</span>
+          }
+        }
+      </div>
+
+      <div class="field">
+        <label for="author">Auteur *</label>
+        <input id="author" formControlName="author" />
+        @if (form.controls.author.invalid && form.controls.author.touched) {
+          <span class="field-error">L'auteur est obligatoire.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="documentJson">Document JSON (optionnel)</label>
+        <textarea id="documentJson" formControlName="documentJson" rows="8" placeholder='{ "key": "value" }'></textarea>
+      </div>
+
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Création…' : 'Créer' }}
+      </button>
+      <a routerLink="/courses">Annuler</a>
+    </div>
+
+  </form>
+</div>

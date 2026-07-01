@@ -3,6 +3,9 @@
 
 export type { Address } from './models/address';
 export type { AuditData } from './models/audit-data';
+export type { Course } from './models/course';
+export type { CoursePage } from './models/course-page';
+export type { CourseRequest } from './models/course-request';
 export type { User } from './models/user';
 export type { UserPage } from './models/user-page';
 export type { UserRequest } from './models/user-request';

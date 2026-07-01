@@ -1,5 +1,6 @@
 package com.myapp.backend.infrastructure.rest.exception;
 
+import com.myapp.backend.domain.exception.CourseNotFoundException;
 import com.myapp.backend.domain.exception.UserNameAlreadyExistsException;
 import com.myapp.backend.domain.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +38,17 @@ public class ProblemDetailExceptionHandler extends ResponseEntityExceptionHandle
         pd.setType(URI.create("urn:problem:duplicate-username"));
         pd.setInstance(URI.create(request.getRequestURI()));
         return ResponseEntity.status(CONFLICT).body(pd);
+    }
+
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleCourseNotFound(CourseNotFoundException ex,
+                                                              HttpServletRequest request) {
+        log.warn("Course not found: {}", ex.getMessage());
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        pd.setTitle("Course Not Found");
+        pd.setType(URI.create("urn:problem:course-not-found"));
+        pd.setInstance(URI.create(request.getRequestURI()));
+        return ResponseEntity.status(NOT_FOUND).body(pd);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

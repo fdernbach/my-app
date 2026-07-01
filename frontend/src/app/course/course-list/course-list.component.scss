@@ -1,0 +1,131 @@
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.btn-create {
+  padding: 0.45rem 1rem;
+  background: #1565c0;
+  color: #fff;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover { background: #0d47a1; }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 0.6rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+
+  tr:hover td {
+    background: #fafafa;
+  }
+
+  .col-actions {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pagination-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #555;
+
+  select {
+    padding: 0.25rem 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+}
+
+.pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  button {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+
+    &:hover:not(:disabled) {
+      background: #f5f5f5;
+      border-color: #999;
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+  }
+}
+
+.pagination-info {
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  color: #424242;
+  white-space: nowrap;
+}
+
+.pagination-total {
+  font-size: 0.875rem;
+  color: #757575;
+}
+
+.btn-delete {
+  padding: 0.3rem 0.75rem;
+  background: transparent;
+  color: #c62828;
+  border: 1px solid #c62828;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover { background: #ffebee; }
+}
+
+.status {
+  padding: 1rem 0;
+  color: #666;
+
+  &.error {
+    color: #c62828;
+  }
+}

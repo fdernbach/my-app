@@ -6,6 +6,8 @@ info:
 tags:
   - name: Users
     description: User management
+  - name: Courses
+    description: Course management
 
 paths:
   /users:
@@ -110,6 +112,107 @@ paths:
           description: User deleted
         '404':
           description: User not found
+
+  /courses:
+    get:
+      tags: [Courses]
+      operationId: listCourses
+      summary: List courses with pagination
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+      responses:
+        '200':
+          description: Paginated list of courses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursePage'
+
+    post:
+      tags: [Courses]
+      operationId: createCourse
+      summary: Create a new course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+      responses:
+        '201':
+          description: Course created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid input
+
+  /courses/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+
+    get:
+      tags: [Courses]
+      operationId: getCourseById
+      summary: Get a course by ID
+      responses:
+        '200':
+          description: Course found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: Course not found
+
+    put:
+      tags: [Courses]
+      operationId: updateCourse
+      summary: Update a course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+      responses:
+        '200':
+          description: Course updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid input
+        '404':
+          description: Course not found
+
+    delete:
+      tags: [Courses]
+      operationId: deleteCourse
+      summary: Delete a course
+      responses:
+        '204':
+          description: Course deleted
+        '404':
+          description: Course not found
 
 components:
   schemas:
@@ -263,3 +366,77 @@ components:
           example: "1985-06-15"
         address:
           $ref: '#/components/schemas/Address'
+
+    Course:
+      type: object
+      required:
+        - id
+        - title
+        - author
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        title:
+          type: string
+          maxLength: 256
+          example: "Introduction à Spring Boot"
+        author:
+          type: string
+          example: "jdupont"
+        documentJson:
+          type: object
+          additionalProperties: true
+          description: Contenu libre du cours au format JSON
+        auditData:
+          $ref: '#/components/schemas/AuditData'
+
+    CoursePage:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - pageNumber
+        - pageSize
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+
+    CourseRequest:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: "Introduction à Spring Boot"
+        author:
+          type: string
+          minLength: 1
+          example: "jdupont"
+        documentJson:
+          type: object
+          additionalProperties: true
+          description: Contenu libre du cours au format JSON

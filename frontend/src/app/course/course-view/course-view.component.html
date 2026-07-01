@@ -1,0 +1,54 @@
+@if (state$ | async; as state) {
+  @if (state.loading) {
+    <p class="status">Chargement…</p>
+  } @else if (state.error) {
+    <p class="status error">{{ state.error }}</p>
+    <a routerLink="/courses">← Retour à la liste</a>
+  } @else {
+    @if (state.course; as course) {
+      <div class="course-view">
+        <div class="view-header">
+          <h2>{{ course.title }}</h2>
+          <div class="view-actions">
+            <a [routerLink]="['/courses', course.id, 'edit']" class="btn-edit">Modifier</a>
+            <a routerLink="/courses">← Retour à la liste</a>
+          </div>
+        </div>
+
+        <section>
+          <h3>Informations</h3>
+          <dl>
+            <dt>Titre</dt>
+            <dd>{{ course.title }}</dd>
+
+            <dt>Auteur</dt>
+            <dd>{{ course.author }}</dd>
+          </dl>
+        </section>
+
+        @if (course.documentJson) {
+          <section>
+            <h3>Document JSON</h3>
+            <pre class="json-display">{{ course.documentJson | json }}</pre>
+          </section>
+        }
+
+        @if (course.auditData) {
+          <section class="audit">
+            <h3>Audit</h3>
+            <dl>
+              <dt>Créé le</dt>
+              <dd>{{ course.auditData.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+              <dt>Créé par</dt>
+              <dd>{{ course.auditData.createdBy }}</dd>
+              <dt>Modifié le</dt>
+              <dd>{{ course.auditData.updatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+              <dt>Modifié par</dt>
+              <dd>{{ course.auditData.updatedBy }}</dd>
+            </dl>
+          </section>
+        }
+      </div>
+    }
+  }
+}

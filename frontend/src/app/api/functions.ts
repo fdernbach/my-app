@@ -11,3 +11,13 @@ export type { UpdateUser$Params as UpdateUser$Params } from './fn/users/update-u
 export { updateUser as updateUser } from './fn/users/update-user';
 export type { DeleteUser$Params as DeleteUser$Params } from './fn/users/delete-user';
 export { deleteUser as deleteUser } from './fn/users/delete-user';
+export type { ListCourses$Params as ListCourses$Params } from './fn/courses/list-courses';
+export { listCourses as listCourses } from './fn/courses/list-courses';
+export type { CreateCourse$Params as CreateCourse$Params } from './fn/courses/create-course';
+export { createCourse as createCourse } from './fn/courses/create-course';
+export type { GetCourseById$Params as GetCourseById$Params } from './fn/courses/get-course-by-id';
+export { getCourseById as getCourseById } from './fn/courses/get-course-by-id';
+export type { UpdateCourse$Params as UpdateCourse$Params } from './fn/courses/update-course';
+export { updateCourse as updateCourse } from './fn/courses/update-course';
+export type { DeleteCourse$Params as DeleteCourse$Params } from './fn/courses/delete-course';
+export { deleteCourse as deleteCourse } from './fn/courses/delete-course';
