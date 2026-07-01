@@ -52,6 +52,57 @@ Application de démonstration full-stack en cours de développement, entièremen
 - **Composants** : `UserListComponent`, `UserCreateComponent`, `UserViewComponent`, `UserModifyComponent`, `ConfirmDialogComponent`
 - **Pagination côté client** : sélecteur de taille de page (1 / 5 / 10 / 20), navigation première / précédente / suivante / dernière
 
+### Éditeur de cours de mathématiques
+
+L'éditeur de cours (`CourseEditorComponent`) est un éditeur de documents structurés dédié à la rédaction de cours de mathématiques. Il est intégré dans les vues de création, modification et consultation des cours.
+
+**Technologies**
+
+| Bibliothèque | Version | Rôle |
+|---|---|---|
+| Tiptap 3 | `@tiptap/core` 3.27 | Éditeur ProseMirror (nœuds, extensions, InputRules) |
+| KaTeX | 0.16 | Rendu LaTeX → HTML (inline et display) |
+| MathLive | 0.110 | Champ de saisie interactif pour les équations (double-clic) |
+
+**Hiérarchie de blocs**
+
+```
+Cours
+└── Chapitre
+    └── Section
+        └── Sous-section
+            ├── Définition
+            ├── Théorème
+            ├── Démonstration
+            ├── Exemple
+            ├── Exercice
+            └── Solution
+```
+
+Blocs atomiques (non-conteneurs) : **Équation**, **Image**, tableaux et listes.
+
+**Saisie des mathématiques**
+
+| Syntaxe | Résultat |
+|---|---|
+| `$f' = f$` | Maths inline rendues par KaTeX (InputRule dollar simple) |
+| `$$\int_0^1 f$$` | Maths inline — syntaxe native Tiptap (double dollar) |
+| Bouton « ∑ Équation » | Bloc display — éditeur MathLive (double-clic pour modifier) |
+| Barre de raccourcis | Insertion en un clic : ℝ ℕ ℤ ℚ ℂ ∅ ∈ ∉ ⊂ ⊆ ∀ ∃ ⇒ ⟺ α β γ δ ε λ π σ θ ± ∞ |
+
+**Extensions Tiptap personnalisées** (`src/app/course/course-editor/extensions/`)
+
+- `course-blocks.ts` — 9 types de blocs structurels et sémantiques via la factory `makeCourseBlock`
+- `equation-node.ts` — nœud atomique avec rendu KaTeX et éditeur MathLive au double-clic
+- `image-node.ts` — nœud atomique avec saisie d'URL et légende inline
+- `single-dollar-math.ts` — InputRule qui convertit `$...$` en nœud `inlineMath` (complète la règle native `$$...$$`)
+
+**Architecture du composant**
+
+- `ViewEncapsulation.None` : les styles SCSS du composant s'appliquent au DOM généré par ProseMirror
+- Insertion contextuelle : un clic sur « Démonstration » insère le bloc *après* le Théorème courant (pas à l'intérieur), en remontant l'arbre ProseMirror via `$from.depth`
+- Le document est sérialisé en JSON Tiptap (stocké dans la colonne `document_json` JSONB de PostgreSQL)
+
 ---
 
 ## Démarrage rapide
@@ -103,5 +154,13 @@ my-app/
     └── src/app/
         ├── api/                         # Code généré (ng-openapi-gen)
         ├── shared/                      # Composants réutilisables
-        └── user/                        # Feature User (CRUD + pagination)
+        ├── user/                        # Feature User (CRUD + pagination)
+        └── course/                      # Feature Course
+            ├── course.service.ts
+            ├── course-list/
+            ├── course-create/
+            ├── course-modify/
+            ├── course-view/
+            └── course-editor/           # Éditeur de cours (Tiptap + KaTeX + MathLive)
+                └── extensions/          # Nœuds et règles Tiptap personnalisés
 ```

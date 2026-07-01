@@ -18,18 +18,18 @@
         <section>
           <h3>Informations</h3>
           <dl>
-            <dt>Titre</dt>
-            <dd>{{ course.title }}</dd>
-
             <dt>Auteur</dt>
             <dd>{{ course.author }}</dd>
           </dl>
         </section>
 
         @if (course.documentJson) {
-          <section>
-            <h3>Document JSON</h3>
-            <pre class="json-display">{{ course.documentJson | json }}</pre>
+          <section class="section--editor">
+            <h3>Contenu</h3>
+            <app-course-editor
+              [content]="course.documentJson"
+              class="readonly-editor"
+            />
           </section>
         }
 

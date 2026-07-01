@@ -3,11 +3,12 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { CourseService } from '../course.service';
 import { CourseRequest } from '../../api/models';
+import { CourseEditorComponent } from '../course-editor/course-editor.component';
 
 @Component({
   selector: 'app-course-create',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CourseEditorComponent],
   templateUrl: './course-create.component.html',
   styleUrl: './course-create.component.scss'
 })
@@ -19,10 +20,15 @@ export class CourseCreateComponent {
   readonly error = signal<string | null>(null);
 
   readonly form = new FormGroup({
-    title:        new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(256)] }),
-    author:       new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    documentJson: new FormControl('', { nonNullable: true }),
+    title:  new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(256)] }),
+    author: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
+
+  documentJson: Record<string, unknown> | null = null;
+
+  onEditorChange(content: Record<string, unknown>): void {
+    this.documentJson = content;
+  }
 
   submit(): void {
     if (this.form.invalid) {
@@ -30,22 +36,11 @@ export class CourseCreateComponent {
       return;
     }
 
-    const { title, author, documentJson } = this.form.getRawValue();
-
-    let parsedDocument: { [key: string]: any } | undefined;
-    if (documentJson.trim()) {
-      try {
-        parsedDocument = JSON.parse(documentJson);
-      } catch {
-        this.error.set('Le document JSON est invalide.');
-        return;
-      }
-    }
-
+    const { title, author } = this.form.getRawValue();
     const request: CourseRequest = {
       title,
       author,
-      ...(parsedDocument !== undefined && { documentJson: parsedDocument }),
+      ...(this.documentJson && { documentJson: this.documentJson as { [key: string]: any } }),
     };
 
     this.submitting.set(true);

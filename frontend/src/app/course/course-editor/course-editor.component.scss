@@ -1,0 +1,316 @@
+/* ── Wrapper ────────────────────────────────────────────────────────────── */
+.course-editor {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────────────────── */
+.ce-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.ce-toolbar__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+
+.ce-toolbar__group--structural button {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.ce-toolbar__separator {
+  width: 1px;
+  height: 24px;
+  background: #ccc;
+  margin: 0 0.2rem;
+}
+
+.ce-toolbar button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  color: #333;
+}
+
+.ce-toolbar button:hover  { background: #e8e8e8; }
+.ce-toolbar button.active { background: #1565c0; color: #fff; border-color: #1565c0; }
+
+/* ── Math shortcuts toolbar ─────────────────────────────────────────────── */
+.ce-math-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding: 0.35rem 0.75rem;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.ce-math-btn {
+  padding: 0.2rem 0.45rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  font-family: 'STIX Two Math', 'Latin Modern Math', 'Cambria Math', serif;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  color: #333;
+  min-width: 1.8rem;
+  text-align: center;
+}
+
+.ce-math-btn:hover { background: #e8f0fe; border-color: #1565c0; color: #1565c0; }
+
+/* ── ProseMirror mount / content area ───────────────────────────────────── */
+.ce-content {
+  flex: 1;
+  min-height: 400px;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  overflow-y: auto;
+}
+
+.ce-content .ProseMirror {
+  outline: none;
+  min-height: 360px;
+}
+
+.ce-content .ProseMirror > * + * { margin-top: 0.75rem; }
+
+.ce-content .ProseMirror p { line-height: 1.65; }
+
+.ce-content .ProseMirror ul,
+.ce-content .ProseMirror ol {
+  padding-left: 1.5rem;
+}
+
+.ce-content .ProseMirror li + li { margin-top: 0.25rem; }
+
+/* Table */
+.ce-content .ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+
+.ce-content .ProseMirror th,
+.ce-content .ProseMirror td {
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+  min-width: 60px;
+  position: relative;
+}
+
+.ce-content .ProseMirror th { background: #f0f0f0; font-weight: 600; }
+
+.ce-content .ProseMirror .selectedCell::after {
+  background: rgba(21, 101, 192, 0.15);
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ce-content .ProseMirror .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #1565c0;
+  cursor: col-resize;
+}
+
+/* ── Course block nodes ─────────────────────────────────────────────────── */
+.ce-block {
+  border-left: 4px solid var(--block-color, #999);
+  border-radius: 0 6px 6px 0;
+  margin: 0.75rem 0;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.ce-block__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: color-mix(in srgb, var(--block-color, #999) 12%, white);
+}
+
+.ce-block__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--block-color, #999);
+  white-space: nowrap;
+}
+
+.ce-block__title-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212121;
+  outline: none;
+  padding: 0;
+}
+
+.ce-block__title-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.ce-block__content {
+  padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.ce-block__content > * + * { margin-top: 0.5rem; }
+
+/* ── Equation node ──────────────────────────────────────────────────────── */
+.ce-equation {
+  display: block;
+  padding: 0.5rem 1rem;
+  margin: 0.75rem 0;
+  border: 1px dashed #bbb;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+  text-align: center;
+}
+
+.ce-equation:hover { border-color: #1565c0; background: #f0f4ff; }
+
+.ce-equation__rendered {
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ce-equation__placeholder {
+  color: #aaa;
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+.ce-equation__editor { padding: 0.25rem 0; }
+
+.ce-equation__mathfield {
+  width: 100%;
+  font-size: 1.1rem;
+  min-height: 2.5rem;
+  border: 1px solid #1565c0;
+  border-radius: 4px;
+  padding: 0.25rem;
+  background: #fff;
+}
+
+.ce-equation__mf-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.4rem;
+}
+
+.ce-equation__done-btn {
+  padding: 0.25rem 0.75rem;
+  background: #1565c0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.ce-equation__done-btn:hover { background: #0d47a1; }
+
+/* KaTeX display override */
+.katex-display { margin: 0.25rem 0 !important; overflow-x: auto; }
+
+/* Tiptap Mathematics extension — inline & block math nodes */
+.tiptap-mathematics-render {
+  cursor: pointer;
+  padding: 0 2px;
+  border-radius: 3px;
+  background: #f0f4ff;
+  transition: background 0.15s;
+}
+
+.tiptap-mathematics-render:hover,
+.tiptap-mathematics-render--editable:hover { background: #dce7ff; }
+
+/* Block math (div) */
+div.tiptap-mathematics-render {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  border: 1px dashed #b3c6f0;
+  border-radius: 6px;
+  margin: 0.5rem 0;
+  background: #f7f9ff;
+}
+
+div.tiptap-mathematics-render:hover { background: #eef2ff; }
+
+.inline-math-error,
+.block-math-error { color: #c62828; font-style: italic; }
+
+/* ── Image node ─────────────────────────────────────────────────────────── */
+.ce-image {
+  display: block;
+  margin: 0.75rem 0;
+  border: 1px dashed #bbb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background: #fafafa;
+}
+
+.ce-image__url-input,
+.ce-image__caption-input {
+  display: block;
+  width: 100%;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.ce-image__url-input:focus,
+.ce-image__caption-input:focus { border-color: #1565c0; }
+
+.ce-image__img {
+  max-width: 100%;
+  max-height: 400px;
+  display: block;
+  margin: 0.5rem auto;
+  border-radius: 4px;
+}
+
+.ce-image__caption-input {
+  font-style: italic;
+  color: #555;
+  margin-top: 0.4rem;
+}

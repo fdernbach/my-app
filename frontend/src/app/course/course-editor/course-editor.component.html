@@ -1,0 +1,64 @@
+<div class="course-editor">
+
+  <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
+  <div class="ce-toolbar">
+
+    <div class="ce-toolbar__group">
+      <button type="button" (click)="toggleBold()"   [class.active]="isActive('bold')"   title="Gras (Ctrl+B)">     <b>B</b>  </button>
+      <button type="button" (click)="toggleItalic()"    [class.active]="isActive('italic')"    title="Italique (Ctrl+I)">   <i>I</i>  </button>
+      <button type="button" (click)="toggleUnderline()" [class.active]="isActive('underline')" title="Souligné (Ctrl+U)">   <u>S</u>  </button>
+      <button type="button" (click)="toggleStrike()"    [class.active]="isActive('strike')"    title="Barré">               <s>S</s>  </button>
+    </div>
+
+    <div class="ce-toolbar__separator"></div>
+
+    <div class="ce-toolbar__group ce-toolbar__group--structural">
+      @for (b of structuralBlocks; track b.cmd) {
+        <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">
+          + {{ b.label }}
+        </button>
+      }
+    </div>
+
+    <div class="ce-toolbar__separator"></div>
+
+    <div class="ce-toolbar__group">
+      @for (b of contentBlocks; track b.cmd) {
+        <button type="button" (click)="insertBlock(b.cmd)" title="Insérer {{ b.label }}">
+          + {{ b.label }}
+        </button>
+      }
+    </div>
+
+    <div class="ce-toolbar__separator"></div>
+
+    <div class="ce-toolbar__group">
+      @for (b of specialBlocks; track b.cmd) {
+        <button type="button" (click)="insertBlock(b.cmd)" [title]="b.title ?? b.label">
+          {{ b.label }}
+        </button>
+      }
+    </div>
+
+    <div class="ce-toolbar__separator"></div>
+
+    <div class="ce-toolbar__group">
+      <button type="button" (click)="undo()" title="Annuler (Ctrl+Z)">↩</button>
+      <button type="button" (click)="redo()" title="Refaire (Ctrl+Y)">↪</button>
+    </div>
+
+  </div>
+
+  <!-- ── Math shortcuts toolbar ───────────────────────────────────────────── -->
+  <div class="ce-math-toolbar">
+    @for (s of mathShortcuts; track s.latex) {
+      <button type="button" class="ce-math-btn" [title]="s.title" (click)="insertMathShortcut(s.latex)">
+        {{ s.label }}
+      </button>
+    }
+  </div>
+
+  <!-- ── ProseMirror mount point ─────────────────────────────────────────── -->
+  <div #editorEl class="ce-content"></div>
+
+</div>

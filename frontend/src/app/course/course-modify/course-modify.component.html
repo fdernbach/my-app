@@ -35,13 +35,15 @@
             <span class="field-error">L'auteur est obligatoire.</span>
           }
         </div>
-
-        <div class="field">
-          <label for="documentJson">Document JSON (optionnel)</label>
-          <textarea id="documentJson" formControlName="documentJson" rows="10"></textarea>
-        </div>
-
       </fieldset>
+
+      <div class="field">
+        <label>Contenu du cours</label>
+        <app-course-editor
+          [content]="initialDocumentJson"
+          (contentChange)="onEditorChange($event)"
+        />
+      </div>
 
       <div class="actions">
         <button type="submit" [disabled]="submitting()">

@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { CourseService } from '../course.service';
 import { Course } from '../../api/models';
+import { CourseEditorComponent } from '../course-editor/course-editor.component';
 
 interface CourseViewState {
   loading: boolean;
@@ -14,7 +15,7 @@ interface CourseViewState {
 @Component({
   selector: 'app-course-view',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, JsonPipe, RouterLink],
+  imports: [AsyncPipe, DatePipe, RouterLink, CourseEditorComponent],
   templateUrl: './course-view.component.html',
   styleUrl: './course-view.component.scss'
 })
