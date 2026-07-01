@@ -154,12 +154,26 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
     this._mathDialogPos = pos;
     this.mathDialogOpen.set(true);
     setTimeout(() => {
-      const mf = document.querySelector<any>('.imd-mathfield');
-      if (!mf) return;
+      const mf  = document.querySelector<any>('.imd-mathfield');
+      const ta  = document.querySelector<HTMLTextAreaElement>('.imd-latex-input');
+      if (!mf || !ta) return;
+
       mf.value = latex;
-      mf.focus();
-      mf.addEventListener('input', () => this._renderMathPreview(mf.value));
+      ta.value = latex;
       this._renderMathPreview(latex);
+      mf.focus();
+
+      // math-field → textarea + preview
+      mf.addEventListener('input', () => {
+        ta.value = mf.value;
+        this._renderMathPreview(mf.value);
+      });
+
+      // textarea → math-field + preview
+      ta.addEventListener('input', () => {
+        mf.value = ta.value;
+        this._renderMathPreview(ta.value);
+      });
     }, 0);
   }
 
@@ -170,8 +184,8 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   confirmMathDialog(): void {
-    const mf = document.querySelector<any>('.imd-mathfield');
-    const latex = (mf?.value ?? '').trim();
+    const ta = document.querySelector<HTMLTextAreaElement>('.imd-latex-input');
+    const latex = (ta?.value ?? '').trim();
     if (latex && this.editor && this._mathDialogPos !== null) {
       (this.editor.chain().focus() as any)
         .updateInlineMath({ latex, pos: this._mathDialogPos })
@@ -194,7 +208,10 @@ export class CourseEditorComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
-    if (this.mathDialogOpen()) this.closeMathDialog();
+    if (!this.mathDialogOpen()) return;
+    // Ne pas fermer si le focus est dans le champ MathLive
+    if (document.activeElement?.tagName.toLowerCase() === 'math-field') return;
+    this.closeMathDialog();
   }
 
   // ── Toolbar actions ────────────────────────────────────────────────────────

@@ -377,6 +377,25 @@ div.tiptap-mathematics-render:hover { background: #eef2ff; }
   &:focus-within { border-color: #1565c0; outline: none; }
 }
 
+.imd-latex-input {
+  width: 100%;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #c5cae9;
+  border-radius: 8px;
+  resize: vertical;
+  background: #f7f7ff;
+  color: #1a1a2e;
+
+  &:focus {
+    outline: none;
+    border-color: #1565c0;
+    background: #fff;
+  }
+}
+
 .imd-actions {
   display: flex;
   justify-content: flex-end;
